@@ -4,7 +4,7 @@ class Archer {
 
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/archer.png");
 
-        this.velocity = { x: 0, y: 50 };
+        this.velocity = { x: 0, y: 0 };
         this.maxSpeed = 50; // pixels per second
 
         this.animations = [];
@@ -23,6 +23,9 @@ class Archer {
     };
 
     update() {
+        this.elapsedTime += this.game.clockTick;
+        this.velocity = { x: Math.cos(this.elapsedTime), y: Math.sin(this.elapsedTime) };
+
         this.facing = getFacing(this.velocity);
     };
 
@@ -32,7 +35,7 @@ class Archer {
         } else {
             ctx.save();
             ctx.scale(-1, 1);
-            this.animations[this.state][8 - this.facing].drawFrame(this.game.clockTick, ctx, -(this.x) - 64, this.y, 1);
+            this.animations[this.state][8 - this.facing].drawFrame(this.game.clockTick, ctx, -(this.x) - 48, this.y, 1);
             ctx.restore();
         }
     };

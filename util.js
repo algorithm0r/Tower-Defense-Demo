@@ -14,6 +14,7 @@ function hsl(h, s, l) {
 };
 
 function getFacing(velocity) {
+    if (velocity.x === 0 && velocity.y === 0) return 4;
     let angle = Math.atan2(velocity.y, velocity.x) / Math.PI;
 
     if (-0.625 < angle && angle < -0.375) return 0;

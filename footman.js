@@ -15,6 +15,13 @@ class Footman {
         this.animations[0].push(new Animator(this.spritesheet, 236, 9, 48, 53, 5, 0.2, 0, false, true));
         this.animations[0].push(new Animator(this.spritesheet, 308, 9, 48, 53, 5, 0.2, 0, false, true));
 
+        this.animations.push([]);
+        this.animations[1].push(new Animator(this.spritesheet, 0, 279, 58, 58, 4, 1, 0, false, true));
+        this.animations[1].push(new Animator(this.spritesheet, 77, 279, 64, 58, 4, 1, 0, false, true));
+        this.animations[1].push(new Animator(this.spritesheet, 150, 279, 64, 58, 4, 1, 0, false, true));
+        this.animations[1].push(new Animator(this.spritesheet, 233, 279, 64, 58, 4, 1, 0, false, true));
+        this.animations[1].push(new Animator(this.spritesheet, 312, 279, 58, 58, 4, 1, 0, false, true));
+
         this.state = 0; // 0 walking, 1 attacking, 2 dead
 
         this.facing = 0; // 0 = up, clockwise
@@ -23,6 +30,9 @@ class Footman {
     };
 
     update() {
+        this.elapsedTime += this.game.clockTick;
+        this.velocity = { x: Math.cos(this.elapsedTime), y: Math.sin(this.elapsedTime) };
+
         this.facing = getFacing(this.velocity);
     };
 
@@ -32,7 +42,7 @@ class Footman {
         } else {
             ctx.save();
             ctx.scale(-1, 1);
-            this.animations[this.state][8 - this.facing].drawFrame(this.game.clockTick, ctx, -(this.x) - 64, this.y, 1);
+            this.animations[this.state][8 - this.facing].drawFrame(this.game.clockTick, ctx, -(this.x) - 48, this.y, 1);
             ctx.restore();
         }
     };
