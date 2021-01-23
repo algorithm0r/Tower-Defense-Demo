@@ -1,6 +1,8 @@
 class Arrow {
     constructor(game, x, y) {
         Object.assign(this, { game, x, y });
+        this.radius = 12;
+        this.smooth = false;
 
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/arrow.png");
 
@@ -41,10 +43,13 @@ class Arrow {
             offscreenCtx.restore();
             this.cache[angle] = offscreenCanvas;
         }
-        ctx.drawImage(this.cache[angle], this.x, this.y);
+        var xOffset = 16;
+        var yOffset = 16;
+
+        ctx.drawImage(this.cache[angle], this.x - xOffset, this.y - yOffset);
         if (PARAMS.DEBUG) {
             ctx.strokeStyle = 'Green';
-            ctx.strokeRect(this.x, this.y, 32, 32);
+            ctx.strokeRect(this.x - xOffset, this.y - yOffset, 32, 32);
         }
     };
 
@@ -56,20 +61,31 @@ class Arrow {
     };
 
     draw(ctx) {
-        let offset = 32;
-        if (this.facing < 5) {
-            this.animations[this.facing].drawFrame(this.game.clockTick, ctx, this.x + offset, this.y, 1);
+        var xOffset = 16;
+        var yOffset = 16;
+        if (this.smooth) {
+            let angle = Math.atan2(this.velocity.y , this.velocity.x);
+            if (angle < 0) angle += Math.PI * 2;
+            let degrees = Math.floor(angle / Math.PI / 2 * 360);
+
+            this.drawAngle(ctx, degrees);
         } else {
-            ctx.save();
-            ctx.scale(-1, 1);
-            this.animations[8 - this.facing].drawFrame(this.game.clockTick, ctx, -(this.x) - 32 - offset, this.y, 1);
-            ctx.restore();
+            if (this.facing < 5) {
+                this.animations[this.facing].drawFrame(this.game.clockTick, ctx, this.x - xOffset, this.y - yOffset, 1);
+            } else {
+                ctx.save();
+                ctx.scale(-1, 1);
+                this.animations[8 - this.facing].drawFrame(this.game.clockTick, ctx, -(this.x) - 32 + xOffset, this.y - yOffset, 1);
+                ctx.restore();
+            }
         }
 
-        let angle = Math.atan2(this.velocity.y, this.velocity.x);
-        if (angle < 0) angle += Math.PI * 2;
-        let degrees = Math.floor(angle / Math.PI / 2 * 360);
-
-        this.drawAngle(ctx, degrees);
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = "Red";
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+            ctx.closePath();
+            ctx.stroke();
+        }
     };
 };

@@ -75,6 +75,7 @@ class GameEngine {
 
     update() {
         var entitiesCount = this.entities.length;
+        PARAMS.DEBUG = document.getElementById("debug").checked;
 
         for (var i = 0; i < entitiesCount; i++) {
             var entity = this.entities[i];

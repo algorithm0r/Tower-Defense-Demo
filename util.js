@@ -13,6 +13,18 @@ function hsl(h, s, l) {
     return "hsl(" + h + "," + s + "%," + l + "%)";
 };
 
+function distance(A, B) {
+    return Math.sqrt((B.x - A.x) * (B.x - A.x) + (B.y - A.y)*(B.y - A.y));
+};
+
+function collide(A, B) {
+    return (distance(A, B) < A.radius + B.radius);
+};
+
+function canSee(A, B) { // if A can see B
+    return (distance(A, B) < A.visualRadius + B.radius);
+};
+
 function getFacing(velocity) {
     if (velocity.x === 0 && velocity.y === 0) return 4;
     let angle = Math.atan2(velocity.y, velocity.x) / Math.PI;
