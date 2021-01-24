@@ -1,12 +1,15 @@
 class Arrow {
-    constructor(game, x, y) {
-        Object.assign(this, { game, x, y });
+    constructor(game, x, y, target, towerTeam, heatSeeking) {
+        Object.assign(this, { game, x, y, target, towerTeam, heatSeeking });
         this.radius = 12;
         this.smooth = false;
 
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/arrow.png");
 
-        this.velocity = {x:0,y:0};
+        var dist = distance(this, this.target);
+        this.maxSpeed = 200; // pixels per second
+
+        this.velocity = { x: (this.target.x - this.x) / dist * this.maxSpeed, y: (this.target.y - this.y) / dist * this.maxSpeed };
 
         this.cache = [];
 
@@ -54,8 +57,28 @@ class Arrow {
     };
 
     update() {
-        this.elapsedTime += this.game.clockTick;
-        this.velocity = { x: Math.cos(this.elapsedTime), y: Math.sin(this.elapsedTime) };
+        this.heatSeeking = document.getElementById("heatseeking").checked;
+        this.smooth = document.getElementById("smooth").checked;
+
+        if (this.heatSeeking) {
+            var dist = distance(this, this.target);
+            this.velocity = { x: (this.target.x - this.x) / dist * this.maxSpeed, y: (this.target.y - this.y) / dist * this.maxSpeed };
+        }
+
+        this.x += this.velocity.x * this.game.clockTick;
+        this.y += this.velocity.y * this.game.clockTick;
+
+        for (var i = 0; i < this.game.entities.length; i++) {
+            var ent = this.game.entities[i];
+            if (this.towerTeam && (ent instanceof Archer || ent instanceof Footman) && collide(this, ent)) {
+                ent.hitpoints -= 10;
+                this.removeFromWorld = true;
+            }
+            if (!this.towerTeam && ent instanceof Tower && collide(this, ent)) {
+                ent.hitpoints -= 10;
+                this.removeFromWorld = true;
+            }
+        }
 
         this.facing = getFacing(this.velocity);
     };

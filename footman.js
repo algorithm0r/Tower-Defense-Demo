@@ -2,8 +2,12 @@ class Footman {
     constructor(game, x, y, path) {
         Object.assign(this, { game, x, y, path });
 
+        this.initialPoint = { x, y };
+
         this.radius = 20;
         this.visualRadius = 200;
+
+        this.hitpoints = 100;
 
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/footman.png");
 
@@ -40,6 +44,11 @@ class Footman {
     update() {
         this.elapsedTime += this.game.clockTick;
         var dist = distance(this, this.target);
+
+        if (this.hitpoints <= 0) {
+            this.removeFromWorld = true;
+            this.game.addEntity(new Footman(gameEngine, 1000, 800, [{ x: randomInt(800), y: randomInt(800) }, { x: randomInt(800), y: randomInt(800) }, { x: randomInt(800), y: randomInt(800) }, { x: 0, y: 0 }]));
+        }
 
         if (this.target.removeFromWorld) this.state = 0;
 
@@ -126,6 +135,14 @@ class Footman {
             ctx.restore();
         }
         if (PARAMS.DEBUG) {
+            ctx.strokeStyle = "Black";
+            ctx.beginPath();
+            ctx.moveTo(this.initialPoint.x, this.initialPoint.y);
+            for (var i = 0; i < this.path.length; i++) {
+                ctx.lineTo(this.path[i].x, this.path[i].y);
+            };
+            ctx.stroke();
+
             ctx.strokeStyle = "Red";
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);

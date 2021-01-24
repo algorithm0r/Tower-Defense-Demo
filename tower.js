@@ -4,9 +4,10 @@ class Tower {
 
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/buildings.png");
         this.radius = 30;
-        this.visualRadius = 300;
+        this.visualRadius = 600;
         this.state = 0;
         this.model = randomInt(3);
+        this.fireRate = 1;
 
         this.hitpoints = 100;
 
@@ -15,13 +16,26 @@ class Tower {
 
     update() {
         this.elapsedTime += this.game.clockTick;
-        if (this.elapsedTime > 1) {
-            this.state = 1;
+        if (this.state < 2) {
+            if (this.elapsedTime > 1) {
+                this.state = 1;
+            }
+            if (this.elapsedTime > 2) {
+                this.state = 2;
+            }
+        } else {
+            for (var i = 0; i < this.game.entities.length; i++) {
+                var ent = this.game.entities[i];
+                if ((ent instanceof Archer || ent instanceof Footman) && canSee(this, ent) && this.elapsedTime > this.fireRate) {
+                    this.elapsedTime = 0;
+                    this.game.addEntity(new Arrow(this.game, this.x, this.y, ent, true, true));
+                }
+            }
         }
-        if (this.elapsedTime > 2) {
-            this.state = 2;
+        if (this.hitpoints <= 0) {
+            this.removeFromWorld = true;
+            this.game.addEntity(new Tower(this.game, randomInt(400), randomInt(400)));
         }
-        if (this.hitpoints < 0) this.removeFromWorld = true;
     };
 
     draw(ctx) {
