@@ -8,6 +8,9 @@ class Archer {
         this.visualRadius = 200;
 
         this.hitpoints = 80;
+        this.maxhitpoints = 80;
+
+        this.healthbar = new HealthBar(this);
 
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/archer.png");
 
@@ -154,6 +157,6 @@ class Archer {
             ctx.stroke();
             ctx.setLineDash([]);
         }
-
+        this.healthbar.draw(ctx);
     };
 };

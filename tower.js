@@ -9,7 +9,10 @@ class Tower {
         this.model = randomInt(3);
         this.fireRate = 1;
 
-        this.hitpoints = 100;
+        this.hitpoints = 150;
+        this.maxhitpoints = 150;
+
+        this.healthbar = new HealthBar(this);
 
         this.elapsedTime = 0;
     };
@@ -82,5 +85,6 @@ class Tower {
             ctx.stroke();
             ctx.setLineDash([]);
         }
+        this.healthbar.draw(ctx);
     };
 };

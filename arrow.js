@@ -71,11 +71,15 @@ class Arrow {
         for (var i = 0; i < this.game.entities.length; i++) {
             var ent = this.game.entities[i];
             if (this.towerTeam && (ent instanceof Archer || ent instanceof Footman) && collide(this, ent)) {
-                ent.hitpoints -= 10;
+                var damage = 10 + randomInt(6);
+                ent.hitpoints -= damage;
+                this.game.addEntity(new Score(this.game, ent.x, ent.y, damage));
                 this.removeFromWorld = true;
             }
             if (!this.towerTeam && ent instanceof Tower && collide(this, ent)) {
-                ent.hitpoints -= 10;
+                var damage = 7 + randomInt(4);
+                ent.hitpoints -= damage;
+                this.game.addEntity(new Score(this.game, ent.x, ent.y, damage));
                 this.removeFromWorld = true;
             }
         }

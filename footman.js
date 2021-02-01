@@ -8,6 +8,9 @@ class Footman {
         this.visualRadius = 200;
 
         this.hitpoints = 100;
+        this.maxhitpoints = 100;
+
+        this.healthbar = new HealthBar(this);
 
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/footman.png");
 
@@ -69,7 +72,9 @@ class Footman {
                     this.state = 1;
                     this.elapsedTime = 0;
                 } else if (this.elapsedTime > 0.8) {
-                    ent.hitpoints -= 8;
+                    var damage = 7 + randomInt(4);
+                    ent.hitpoints -= damage;
+                    this.game.addEntity(new Score(this.game, ent.x, ent.y, damage));
                     this.elapsedTime = 0;
                 }
             }
@@ -156,5 +161,6 @@ class Footman {
             ctx.stroke();
             ctx.setLineDash([]);
         }
+        this.healthbar.draw(ctx);
     };
 };
